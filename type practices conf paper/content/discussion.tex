@@ -1,0 +1,42 @@
+% !TeX root = ../main.tex
+
+\section{Discussion}
+
+\subsection{Threats to Validity}
+\textbf{Accuracy of Type Inference Tools.}
+Static type inference for Python is highly challenging, because Python systems heavily utilize external API functions and objects can be dynamically mutated in different execution paths. We combined the results of Pysonar2 and Mypy to detect dynamic type-aware practices. However, the tools still exhibit inherent limitations, because they infer data types statically and can not cover all possible dynamic behaviors, which reduces the detection accuracy of dynamic type-aware practices. In fact, this study aims at investigating the coding practices performed by developers, not the problematic usage performed by users. It means that we expect to detect the practices which behave risky statically, not dynamically.
+
+\textbf{Identification of Instance Introducing Commits.} 
+In order to identify the commit that introduced a practice example, we first extract all the candidate commits which change the method that contains the example, and then check the candidate commits one by one. However, an example may be introduced when the commit changes the code outside of the method that contains it. For example, in an assignment statement where the new value of the variable comes from the return value of a function, \emph{Inconsistent Assignment Types} occurs when  a commit changes the return value with an inconsistent type in the function. We assume that the occurrence of this case is limited. 
+
+
+\textbf{Selection of Subjects.} 
+9 Python systems and 70 Python developers are selected in this study. We are aware that the study results are biased by the selection of these subjects and we cannot generalize the results of this study to a wider range of subjects.
+As a future work, the study would be repeated across different systems and different developers so that the understanding of dynamic type-aware practices can be calibrated. More importantly, we expect to discover and analyze more types of risky practices from the future study.
+
+
+\subsection{Lessons From Our Study}
+
+\textbf{Developers follow different type-aware coding conventions.} An interesting finding from the survey is that developers give inconsistent answers to the questions. For example, 11\% of developers answered that they commonly use \emph{Dynamic Attribute Access} in Python systems, while some developers said such practices are really error-prone and a class should never have to visit an attribute via reflection. This is caused from different coding conventions followed by these developers. As we can see from the result in TABLE \ref{tab:instances}, the occurrences of each type of dynamic type-aware practices are not consistent among different systems. We find that some developers prefer developing Python systems in the way of static typing through type annotation, as they think static typing benefits maintenance tasks. We can also find most developers prefer dynamic typing in many programming tasks, as they believe dynamic typing speeds up development. 
+
+
+\textbf{Dynamic type-aware practices are useful but dangerous.} As mentioned above, developers have widespread debate over the choice between dynamic typing and static typing. The result of this study gives hints about this topic, which benefits language design.
+
+The result of RQ3 in this paper suggests that the misuse of dynamic type-aware practices leads to maintenance issues. Particularly, TABLE \ref{tab:surveyresults} reveals that more than half of developers experienced bugs caused by the studied practices. According to the feedback from some developers, they are aware that many dynamic type-aware practices are not the best solutions, which reduces software quality. They also claimed that one of the things they are always thinking about when developing with Python is the type of a variable and conveying complex types in the documentation. However, developers admitted they still do this a lot. The results of RQ1 and RQ2 also reveal that the dynamic type-aware practices are widely adopted by developers in different programming tasks. Developers explained that dynamic typing is actually a benefit to software development; e.g., dynamic typing allows to use implicit interfaces rather than explicit ones. In summary, our study suggests that dynamic typing is vital but threatening.
+
+\textbf{Dynamic type-aware practices can be improved.} Faced with the detected dynamic type-aware practices, it requires tools for improving these practices. In fact, most of dynamic type-aware practices can be justified depending on a specific context for code readability. For example, 
+\emph{Inconsistent Assignment Types} can be improved by not multiplicating intermediate variables; 
+\emph{Inconsistent Argument Types} can be improved by mimicking function overloading in a data-driven programming paradigm; 
+\emph{Inconsistent Variable Types} can be improved by performing type checks (e.g., by calling \textit{type} or \textit{isinstance} function) before the operations;
+\emph{Dynamic Element Deletion} and \emph{Dynamic Attribute Deletion} can be improved by checking the existence of the object before the deletion;
+\emph{Dynamic Attribute Access} can also be improved by providing a default value for the case that the attribute is non-existant.
+
+In addition, there are some common strategies of reducing bugs caused by dynamic type-aware practices. 
+\begin{itemize}
+\item 
+\textbf{Test, Test, Test.} Given that dynamic type-aware practices mainly occur during development phase according to the result of RQ2, developers suggested that ``all downsides of dynamic typing languages prove that strong testing is required to validate the program''. The idea is making sufficient tests and keeping test coverage high.
+\item 
+\textbf{Using ``try...except...''.} Python developers tend to use ``try...except...'' operations to catch the exceptions, over writing code that seeks to avoid exceptions in the first place. Sometimes developers even deliberately do not handle the exceptions.  For example, \emph{Dynamic Attribute Access} practices are protected by ``try...except \textit{AttributeError}...'' rather than setting a default value of \textit{None}. The reason is that it is a way of signaling invalid input to the caller when it is not appropriate.
+\item 
+\textbf{Type Annotation.} When developing with Python, developers responded that they ``do not have a hard requirement on documentation but have a hard requirement on defining the types of arguments and return values of a function''. If the type contract is explicitly annotated in the documentation, it should be fairly straight forward to check that all cases are covered in code review.
+\end{itemize}

@@ -1,0 +1,113 @@
+\documentclass[10pt,conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\usepackage{multirow}
+\usepackage{booktabs} % For formal tables
+\usepackage{listings}
+\usepackage{booktabs}
+%\usepackage{float}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+\makeatletter
+\newsavebox{\@tabnotebox}
+\providecommand\tmark{} % so having ctable or not is irrelevant
+\providecommand\tnote{}
+\newenvironment{tabularwithnotes}[3][c]
+{\long\def\@tabnotes{#3}%
+	\renewcommand\tmark[1][a]{\makebox[0pt][l]{\textsuperscript{\itshape##1}}}%
+	\renewcommand\tnote[2][a]{\textsuperscript{\itshape##1}\,##2\par}
+	\begin{lrbox}{\@tabnotebox}
+		\begin{tabular}{#2}}
+		{\end{tabular}\end{lrbox}%
+	\parbox{\wd\@tabnotebox}{
+		\usebox{\@tabnotebox}\par
+		\smallskip\@tabnotes
+	}%
+}
+\makeatother
+
+\begin{document}
+
+\title{An Empirical Study on Dynamic Type-Aware Practices in Python Systems}
+
+\maketitle
+
+\begin{abstract}
+The free typing discipline of Python allows developers to program at a higher level of abstraction, which benefits the rapid development and feature upgrade. However, type errors are commonly encountered bugs in Python systems due to the lack of type declaration and static type checking. Especially, the misuse of the free typing discipline may produce hidden bugs and increase maintenance efforts. In this paper, we introduce and detect six types of dynamic type-aware practices in Python programs, which are the common but potentially risky usage of dynamic typing discipline by developers. 
+We carry out an empirical study, which combines a quantitative research on 9 real-world Python systems (with the size of more than 460KLOC) and a qualitative research on 70 professional developers (who are actively contributing to popular systems), to evaluate the effects of these potentially risky practices on software development and maintenance.
+The study investigates how widespread the dynamic type-aware practices are, how they are introduced into Python systems, and whether they correlate with increased likelihood of bug occurring. The results show that: (1) \emph{Inconsistent Variable Types} is the most common type of dynamic type-aware practices; (2) dynamic type-aware practices are introduced into Python systems mainly during development phase; (3) most types of dynamic type-aware practices have a significant positive correlation with bug occurring. This study provides guidance for coding convention, language design, bug detection and fixing.
+\end{abstract}
+
+\begin{IEEEkeywords}
+	dynamic typing, Python, type-aware practices
+\end{IEEEkeywords}
+
+
+\input{content/intro}
+\input{content/def}
+\input{content/detection}
+\input{content/setup}
+\input{content/results}
+\input{content/discussion}
+\input{content/related}
+\input{content/conclusion}
+
+
+\begin{thebibliography}{00}
+\bibitem{b1} M. Pradel, P. Schuh, and K. Sen, ``TypeDevil: Dynamic type inconsistency analysis for JavaScript,'' Proceedings of the 37th International Conference on Software Engineering, vol. 1, pp. 314：C324, 2015.	
+\bibitem{b2} S. Burckhardt, D. Leijen, and J. Protzenko, ``The good, the bad, and the ugly: An empirical study of implicit type conversions in JavaScript,'' LIPIcs-Leibniz International Proceedings in Informatics, vol. 37. Schloss Dagstuhl-Leibniz-Zentrum fuer Informatik, 2015.
+\bibitem{b3} G. Richards, S. Lebresne, B. Burg, and J. Vitek, ``An analysis of the dynamic behavior of JavaScript programs,'' ACM SIGPLAN Notices, vol. 45, no. 6, pp. 1-12. ACM, 2010.
+\bibitem{b4} B. Wang, L. Chen, W. Ma, Z. Chen, and B. Xu, ``An empirical study on the impact of Python dynamic features on change-proneness,'' Proceedings of the 27th International Conference on Software Engineering and Knowledge Engineering, pp. 134：C139, 2015.
+\bibitem{b5} A. Holkner and J. Harland, ``Evaluating the dynamic behaviour of Python applications,'' Proceedings of the Thirty-Second Australasian Conference on Computer Science, vol. 91. Australian Computer Society, Inc., 2009.
+\bibitem{b6} O. Calla\'{u}, R. Robbes, . Tanter, and D. Rthlisberger, ``How (and why) developers use the dynamic features of programming languages: the case of Smalltalk," Empirical Software Engineering, 18.6 (2013): 1156-1194.
+\bibitem{b7} B. Dufour, C. Goard, L. Hendren, O. de Moor, G. Sittampalam, and C. Verbrugge, ``Measuring the dynamic behaviour of AspectJ programs,'' ACM SIGPLAN Notices, 39.10 (2004): 150-169.
+\bibitem{b8} B. {\AA}kerblom, J. Stendahl, M. Tumlin, and T. Wrigstad, ``Tracing dynamic features in Python programs,'' Proceedings of the 11th Working Conference on Mining Software Repositories, pp. 292-295. ACM, 2014.
+\bibitem{b9} J. Park, I. Lim, and S. Ryu, ``Battles with false positives in static analysis of JavaScript web applications in the wild,'' Proceedings of the IEEE/ACM International Conference on Software Engineering Companion, pp. 61-70. IEEE, 2016.
+\bibitem{b10} Z. Gao, C. Bird, and E. T. Barr, ``To type or not to type: quantifying detectable bugs in JavaScript,'' Proceedings of the 39th International Conference on Software Engineering, pp. 758-769. IEEE, 2017.
+\bibitem{b11} L. Gong, M. Pradel, M. Sridharan, and K. Sen, ``DLint: Dynamically checking bad coding practices in JavaScript,'' Proceedings of the 2015 International Symposium on Software Testing and Analysis, pp. 94-105. ACM, 2015.
+%\bibitem{b12} Y. Liu, C. Xu, S.-C. Cheung, and V. Terragni, ``Understanding and detecting wake lock misuses for Android applications,'' Proc. 2016 24th ACM SIGSOFT Int. Symp. Found. Softw. Eng. - FSE 2016, pp. 396：C409, 2016.
+%\bibitem{b13} G. Mezzetti, A. Mller, and F. Strocco, ``Type Unsoundness in Practice: An Empirical Study of Dart,'' Dsl16, pp. 13：C24, 2016.
+\bibitem{b14} Z. Xu, X. Zhang, L. Chen, K. Pei, and B. Xu, ``Python probabilistic type inference with natural language support,'' Proceedings of the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software Engineering, pp. 607-618. ACM, 2016.
+\bibitem{b15} Z. Xu, P. Liu, X. Zhang, and B. Xu. ``Python predictive analysis for bug detection," Proceedings of the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software Engineering, pp. 121-132. ACM, 2016.
+%\bibitem{b16} Vitousek M M, Kent A M, Siek J G, et al. Design and evaluation of gradual typing for Python[C]//ACM SIGPLAN Notices. ACM, 2014, 50(2): 45-56.
+\bibitem{b17} L. Chen, B. Xu, T. Zhou, and X. Zhou, ``A constraint based bug checking approach for python," Proceedings of the 33rd Annual IEEE International In Computer Software and Applications Conference, vol. 2, pp. 306-311. IEEE, 2009.
+%\bibitem{b18} Chen Z, Chen L, Ma W, et al. Understanding metric-based detectable smells in Python software: A comparative study[J]. Information and Software Technology, 2018, 94: 14-29.
+\bibitem{b19} Z. Chen, W. Ma, W. Lin, L. Chen, Y. Li, and B. Xu, ``A study on the changes of dynamic feature code when fixing bugs: towards the benefits and costs of Python dynamic features," Science China Information Sciences, 61, no. 1 (2018): 012107.
+\bibitem{b20} N. Milojkovi{\'c}, M. Ghafari, and O. Nierstrasz, ``Exploiting type hints in method argument names to improve lightweight type inference," Proceedings of the 25th International Conference on Program Comprehension, pp. 77-87. IEEE, 2017.
+\bibitem{b21} A. Stuchlik and S. Hanenberg, ``Static vs. dynamic type systems: an empirical study about the relationship between type casts and development time," ACM SIGPLAN Notices, vol. 47, no. 2, pp. 97-106. ACM, 2011.
+%\bibitem{b22} Milojkovic N, Ghafari M, Nierstrasz O. It's duck (typing) season![C]//Program Comprehension (ICPC), 2017 IEEE/ACM 25th International Conference on. IEEE, 2017: 312-315.
+%\bibitem{b23} Spasojevic B, Lungu M, Nierstrasz O. A case study on type hints in method argument names in Pharo Smalltalk projects[C]//Software Analysis, Evolution, and Reengineering (SANER), 2016 IEEE 23rd International Conference on. IEEE, 2016, 1: 283-292.
+%\bibitem{b24} M. T. Daly, V. Sazawal, and J. S. Foster, ``Work in progress: an empirical study of static typing in ruby'', 2009.
+\bibitem{b25} S. Kleinschmager, R. Robbes, A. Stefik, S. Hanenberg, and E. Tanter, ``Do static type systems improve the maintainability of software systems? An empirical study,'' Proceedings of the 20th International Conference on Program Comprehension, pp. 153-162. IEEE, 2012.
+\bibitem{b26} C. Mayer, S. Hanenberg, R. Robbes, {\'E}. Tanter, and A. Stefik, ``An empirical study of the influence of static
+type systems on the usability of undocumented software,'' ACM SIGPLAN Notices, vol. 47, no. 10, pp. 683-702. ACM, 2012.
+\bibitem{b27} L. A. Meyerovich and A. Rabkin, ``Empirical analysis of programming language adoption,'' ACM SIGPLAN Notices, 2013, 48(10): 1-18.
+\bibitem{b28} B. Ray, D. Posnett, V. Filkov, and P. Devanbu, ``A large scale study of programming languages and code quality in github,'' Proceedings of the 22nd ACM SIGSOFT International Symposium on Foundations of Software Engineering, ACM, 2014, pp. 155：C165.
+\bibitem{b29} M. Paixao, J. Krinke, D. Han, C. Ragkhitwetsagul, and M. Harman, ``Are developers aware of the architectural impact of their changes?," Proceedings of the 32nd IEEE/ACM International Conference on Automated Software Engineering, pp. 95-105. IEEE, 2017.
+\bibitem{b30} M. Tufano, F. Palomba, G. Bavota, R. Oliveto, M. Di Penta, A. De Lucia, and D. Poshyvanyk, ``When and why your code starts to smell bad,'' Proceedings of the 37th IEEE International Conference on Software Engineering, vol. 1, pp. 403-414. IEEE, 2015.
+\bibitem{b31} J. \'{S}liwerski, T. Zimmermann, A. Zeller, ``When do changes induce fixes?,'' ACM SIGSOFT Software Engineering Notes, vol. 30, no. 4, pp. 1-5. ACM, 2005.
+\bibitem{b32} R. A. Fisher,``Statistical methods for research workers," Breakthroughs in Statistics, pp. 66-70. Springer, New York, NY, 1992.
+\bibitem{b33} L. Eder, ``The inconvenient truth about dynamic vs. static typing,'' http://blog.jooq.org/2014/12/11/the-inconvenient-truth-about-dynamic-vs-static-typing,
+December 2014.
+\bibitem{b34} A. Janmyr, ``Static typing is the root of all evil,'' http://www.jayway.com/2010/04/14/static-typing-is-the-root-of-all-evil/, April 2010.
+\bibitem{b35} ``Python'', https://www.python.org/.
+
+\bibitem{b36} ``ipython'', https://github.com/ipython/ipython.
+\bibitem{b37} ``tornado'', https://github.com/tornadoweb/tornado.
+\bibitem{b38} ``scikit-learn'', https://github.com/scikit-learn/scikit-learn.
+\bibitem{b39} ``django'', https://github.com/django/django.
+\bibitem{b40} ``ansible'', https://github.com/ansible/ansible.
+\bibitem{b41} ``Pysonar2'', https://github.com/leafgray/pysonar2.
+\bibitem{b42} ``Mypy'', http://mypy-lang.org/.
+
+\end{thebibliography}
+
+\end{document}

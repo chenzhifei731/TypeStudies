@@ -1,0 +1,54 @@
+\section{Introduction}\label{sec:intro}
+
+Dynamic languages, such as Python and JavaScript, are becoming more popular for their flexibility and are increasingly used in critical application domains. One reason for this popularity is that these languages support free typing discipline; e.g., requiring no type declaration, modifying variable types or object structures dynamically. This freedom offered by dynamic languages allows developers to program at a higher level of abstraction without focusing on the concrete types. However, recent researches claim that dynamic type systems tend to reduce development productivity \cite{b25}, code usability\cite{b26} and code quality \cite{b10,b27,b28}. Especially, type errors are commonly encountered bugs in dynamic languages due to the lack of type declaration and static type checking\cite{b15}. 
+
+Given that dynamic typing poses a potential threat to software development and maintenance tasks, the usage of dynamic typing discipline, which is called \textbf{dynamic type-aware practices}, is in urgent need of a deep investigation. Although many of type-aware practices are reasonable in dynamically typed programs, existing studies have discovered that some may produce quality issues. Gong et al.\cite{b11} proposed type-related rules to check ``too many arguments'', ``accessing the undefined property'' and ``concatenate undefined and a string'' in JavaScript. Pradel et al. \cite{b2} summarized the bad and ugly usage of type coercions in JavaScript. Pradel et al. \cite{b1} also observed that inconsistent types often correlate with problems, thus they checked the variables, properties and functions that have inconsistent types in JavaScript. In these studies, some dynamic type-aware practices lead to incorrect behavior, error-prone programs, or crashes and other unintended behavior.
+
+
+Based on these findings, this paper introduces, detects and investigates six types of risky dynamic type-aware practices in Python\cite{b35}, one of the most popular dynamically typed languages with strong dynamic features. The studied practices are widely used by developers to implement programming tasks, but also have potential threats to software quality in some cases. An example in {\tt ipython}\cite{b36} is presented as follows:
+
+\begin{lstlisting}[ 
+basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+columns=fullflexible,
+breaklines=true,                 % automatic line breaking only at whitespace
+captionpos=b,                    % sets the caption-position to bottom
+tabsize=4,
+escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+stringstyle=\ttfamily,     % string literal style
+frame=single]
+ module_name = {QT_API_PYSIDE: 'PySide',
+					 QT_API_PYQT: 'PyQt4',
+					 QT_API_PYQTv1: 'PyQt4',
+					 QT_API_PYQT5: 'PyQt5',
+					 QT_API_PYQT_DEFAULT: 'PyQt4'}
+ ...
+ module_name = module_name[api]
+\end{lstlisting}
+
+\noindent In the last statement, the type of \emph{module\_name} is changed from \textit{dict} to \textit{string}, which are inconsistent types. The problem in this example comes from re-using variables, and the way it is coded makes it hard to understand. Thus we infer that although dynamic type-aware practices benefit the rapid development\cite{b19}, some types of them may produce hidden bugs and increase maintenance efforts. 
+
+In order to have a deep evaluation, we conduct an empirical study to understand how widespread the dynamic type-aware practices are, at which point during the evolution of the projects they are introduced, and whether their usage correlates with increased likelihood of bug occurring. The study contains both \emph{Quantitative Research} and \emph{Qualitative Research}. Our quantitative research detects dynamic type-aware practices and mines maintenance history in 9 publicly available Python systems, while our qualitative research carries out a questionnaire survey with 70 Python developers who answer their points of dynamic type-aware practices according to their experiences. The study results show that: (1) \emph{Inconsistent Variable Types} is the most common type of dynamic type-aware practices, while \emph{Dynamic Attribute Deletion} rarely occurs in Python systems; (2) dynamic type-aware practices are introduced by developers into Python systems mainly during early development phase; (3) most types of dynamic type-aware practices have a significant positive correlation with bugs in Python systems, and more than 52\% of developers have realized it.
+
+The study results will benefit future research in these fields:
+
+\textbf{Guidance for Coding Convention.} Our work reveals that developers follow different coding conventions towards dynamic typing practices. Particularly, some developers prefer developing in the way of static typing by making the most of type annotation, while some others prefer the way of dynamic typing to promote development efficiency. In order to improve code quality and to save maintenance efforts, the study results suggest that developers should restrict the way the dynamic typing discipline can be used.
+
+\textbf{Guidance for Language Design.} Our work lays the foundation for aiding or investigating the feasibility of retrofitting static type systems onto Python. Developers are aware that many dynamic type-aware practices are not the best solutions. Given that static type systems (e.g., TypeScript\cite{b33} and Flow\cite{b34}) have been developed to support static typing to JavaScript, it is advisable to design a statically typed system for Python to support more type hints or static type checking.
+
+\textbf{Guidance for Bug Detection and Fixing.} Our work provides empirical evidence of the potential relationships between dynamic type-aware practices and bugs. We have implemented the tool of detecting six types of dynamic type-aware practices. In addition, this study suggests the strategies of reducing bugs caused by them, including performing sufficient tests, using ``try...except...'' and utilizing type annotation feature. It provides support for a future practical tool that helps developers to detect and fix type errors with minimal effort.
+
+In summary, this work makes the following contributions:
+\begin{itemize}
+\item 
+We introduce six types of dynamic type-aware practices, which come from the common but potentially risky usage of dynamic typing discipline by developers.
+\item 
+We implement the technique of detecting dynamic type-aware practices in Python. The detection tool produces only three false positives in 356 reported examples.
+\item 
+We present an empirical study on 9 real-world Python systems (with the size of more than 460KLOC) and 70 developers on GitHub (with half of them having more than 7 years' Python programming experience) to understand how dynamic type-aware practices are introduced into systems and whether they correlate with bug occurring in reality.
+\item 
+We provide guidance for coding convention, language design, and bug detection and fixing learned from the results of this study.
+\end{itemize}
+
+
+
+

@@ -1,0 +1,140 @@
+% !TeX root = ../main.tex
+
+\section{Study Design}\label{sec:setup}
+
+\subsection{Research Questions}
+
+Given that developers perform dynamic type-aware practices in Python programs but some of them are not the best solutions, it is unclear why developers use the risky type-aware practices and whether their usage correlates with increased likelihood of bug occurring.
+With the goal of understanding the risky dynamic type-aware practices in Python systems, this study investigates how many dynamic type-aware practices exist in Python systems, how they are introduced into Python systems by developers, and whether they are related to software bugs. More specifically, this study aims at addressing the following research questions:
+
+\textbf{RQ1 (Presence of Dynamic Type-Aware Practices):} \emph{How many dynamic type-aware practices exist in Python systems?} First of all, this research question aims at investigating whether the studied practices are widespread in Python systems. 
+
+\textbf{RQ2 (Intents of Dynamic Type-Aware Practices):} \emph{How are dynamic type-aware practices introduced into Python systems?} The second research question addresses whether the studied practices are introduced as soon as the code entity is created, or whether, instead, they are introduced in the context of specific maintenance activities during software evolution.
+
+\textbf{RQ3 (Relationship with Bugs):} \emph{What is the relationship between dynamic type-aware practices and bugs?} Python does not have compile-time type checking, thus various problems would appear at runtime, especially type errors and attribute errors. The answer to this question will discover whether the methods affected by the studied practices are more prone to bug occurring.
+
+Three research questions in this study are investigated in two perspectives: \emph{Quantitative Research} observes and summarizes real-world facts by mining concrete datasets in publicly available Python systems, and \emph{Qualitative Research} conducts a survey by inviting Python developers to fill out a questionnaire about their experiences and points of the studied practices.
+
+\subsection{Quantitative Research}
+
+\textbf{Subject Systems.} The subject systems of this research consist of 9 open-source Python systems. We selected these systems because they are well-known systems (with from 820 to 31.3K stars on GitHub) in different domains (e.g., library, application, framework) and are nontrivial projects (from 12.7KLOC to 180.0KLOC). All the systems are hosted in Git repositories and record associated issue trackers.
+
+TABLE \ref{tab:subjects} reports for each of them the description of the system (column 2), the overall number of Python files (column 3), methods (column 4) and lines of code (column 5) in the version on January 1 2016, the number of commits (column 6) and issues (column 7) during the 2016-17 year. 
+In this research, we analyze the characteristics of dynamic type-aware practices in the first version in 2016 and explore their effects on bug issues during the following two years, given that two years are sufficient for developers to discover most of the bugs. 
+
+\begin{table*}
+	\setlength{\tabcolsep}{3.6pt}
+	\caption{Subject Systems Under Quantitative Research}
+	\centering
+	\vspace{-10pt}
+	\label{tab:subjects}
+	\begin{tabular}{llrrrrr}
+		\hline
+		\textbf{System}	& \textbf{Description}	& \textbf{\#Files} &\textbf{\#Methods} & \textbf{LOC} &\textbf{\tabincell{l}{\#Commits\\\emph{(2016-17)}}}	&\textbf{\tabincell{l}{\#Issues\\\emph{(2016-17)}}}\\
+		\hline
+		{\tt borg} & Deduplicating archiver with compression and authenticated encryption & 37& 879&12.7K&3,170 &2,985\\
+		{\tt ralph} & Asset management system for data center and back office &302& 1,066& 23.1K&858 &1,065\\
+		{\tt fabric} &Simple, Pythonic remote execution and deployment  &79& 826&13.6K &244&288 \\
+		{\tt requests} & Python HTTP requests for humans & 84&775&19.5K& 1,126&1,257\\
+		{\tt tornado} & Python web framework and asynchronous networking library &112 &3,080& 40.2K&520&615 \\
+		{\tt ansible} & Radically simple IT automation platform & 372&2,772& 61.9K&14,085& 20,614\\
+		{\tt ipython} & Official repository for IPython itself & 334& 3,012&65.6K&1,911&1,860 \\
+		{\tt beets} & Music library manager and MusicBrainz tagger &145 &3,451& 48.1K&2,166& 991\\
+		{\tt scikit-learn} & Machine learning in Python & 644&5,465&180.0K &2,082& 4,279\\
+		\hline
+	\end{tabular}
+\end{table*}
+
+\textbf{Detection of Dynamic Type-Aware Practices.} 
+Based on the detection strategy of dynamic type-aware practices described in Section \ref{sec:detection}, the detection result of risky type-aware practices is reported for each system. 
+
+In order to evaluate the detection accuracy, we manually inspected a part of detected examples to check whether they are real dynamic type-aware practices. The manual inspection was performed together when investigating how dynamic type-aware practices are introduced into systems for RQ2 (detailed in the following paragraphs). The result comes out that there are three examples (two from \emph{Inconsistent Variable Types} and one from \emph{Inconsistent Argument Types}) which are false positives in 356 reported examples. Three false positives come from the incorrect results of the type inference tools.
+
+In addition, false negatives generated from the detection can hardly be evaluated, because the accurate types are not available unless achieving full test coverage. But this study aims at understanding the characteristics of the detected practices and is complemented by the result of qualitative research, thus the occurrence of false negatives would not produce big biases.
+
+
+\textbf{Mining of Practice Introducing Commits.}
+In order to investigate how and when dynamic type-aware practices are introduced into Python systems, we randomly selected a part of detected practice examples, mined the commits which introduced the examples into systems, and then analyzed the developers' intents of the commits. Finally, we successfully mined 353 examples of dynamic type-aware practices.
+
+We assume that the first commit in which the studied example is present is its introducing commit. The introducing commit was identified as follows. First, we mined the evolution history of the analyzed system and identified the methods $M_{c}$ that were changed in each commit $c$. Second, we extracted all candidate commits $CC$, where each commit $c$ in $CC$ satisfies that $M_{c}$ contains the method $m$ where the studied example is located. Third, for each candidate commit $c$ in $CC$, we automatically detected the type-aware practices in the version of $c$. If the detection result showed that the method $m$ did not contain the example in $c$, $c$ was filtered out from $CC$. Fourth, as each commit in the remaining $CC$ may be the introducing commit of the example, we manually checked them in reverse order by evolution history and stopped until we found the commit that introduced the studied example. 
+
+After having identified the introducing commit of a type-aware practice example, we then analyzed the developer's intent of this commit to explore why the example was introduced into the system. As a starting point, we consider the set of tags with different intents proposed by Paixao et al. \cite{b29} and Tufano et al. \cite{b30}. The final set of tags used in this study is presented in TABLE \ref{tab:tags}. ``Development'' was used when the example was inserted along with the whole method that contains it in early development stages. The other tags were used when the introducing commits were used for regular maintenance tasks.
+The manual inspection of dynamic type-aware practice examples was completed by three Ph.D students and each example was traced and tagged by at least two students. After the individual manual inspection, the students' decisions differed in 9 out of 353 examples. For these examples, the tags were finally determined after three students had a discussion and decided by consensus.
+
+\begin{table}
+	\caption{Tags Assigned to the Introducing Commits of Dynamic Type-aware Practices}
+	\centering
+	\vspace{-10pt}
+	\label{tab:tags}
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Tag} & \textbf{Intent of Commit}\\
+		\hline
+		Development & The commit occurs in the unstable development phase\\
+		New Feature &The commit aims at implementing a new feature\\
+		Enhancement &The commit aims at enhancing an existing feature\\
+		Platform Update &The commit aims at updating for a new platform/API\\
+		Refactoring &The commit aims at refactoring the system\\
+		Bug Fixing &The commit aims at fixing a bug\\
+		\hline
+	\end{tabular}
+\end{table}
+
+When mining the introducing commits of detected examples, an example would be filtered out if it is recognized as not belonging to real dynamic type-aware practices (i.e., a false positive) or the students can not have an agreed conclusion about the intent after discussion.
+This mining process was finished until we had successfully mined the introducing commits of 60 randomly selected examples for each type of dynamic type-aware practices (all examples would be covered if the total number of the detected examples is less than 60).
+
+
+\textbf{Extraction of Bug Affected Methods.}
+%In order to explore the relationship between type-aware bad practices and bugs, 
+The investigation of RQ3 explores how many methods that are affected by dynamic type-aware practices are also affected by bugs. Therefore, for each subject system, we identified all bug-fixing commits during the 2016-2017 year and extracted the methods that were changed in these bug-fixing commits. The extracted methods are considered as the methods that are affected by bugs.
+
+We used the approach proposed by \'{S}liwerski et al.\cite{b31} to identify bug affected methods. For a subject system, we extracted all bug reports from the issue tracker system and all commit messages from the commit log. A common practice among developers is describing bug ID and bug summary in commit message whenever they fix a bug, thus we extracted bug-fixing commits by linking commit messages with bug reports, which is finished by matching bug ID or bug summary. Finally, the changed methods in bug-fixing commits were identified as the methods affected by bugs. In this experiment, we considered all tracked issues with different labels instead of only the issues labeled with ``Bug'', because all labels of issues may be resulted from dynamic type-aware practices and we are uncertain what bias this labeling could introduce.
+
+\begin{table*}[ht]
+	\caption{Survey Results in Qualitative Research}
+	\setlength{\tabcolsep}{1.5 pt}
+	\centering
+	\vspace{-10pt}
+	\label{tab:surveyresults}
+	\begin{tabular}{l|l|cccccc}
+		\hline
+		\textbf{Survey Questions}    & \textbf{Options} &\textbf{\tabincell{c}{Inconsistent \\Assignment Types}}  &  \textbf{\tabincell{c}{Inconsistent \\Argument Types}} &\textbf{ \tabincell{c}{Inconsistent \\Variable Types}} & \textbf{\tabincell{c}{Dynamic \\ Element Deletion}}& \textbf{\tabincell{c}{Dynamic \\Attribute Deletion}} & \textbf{\tabincell{c}{Dynamic\\Attribute Access}}\\
+		\hline
+		SQ2: Widely Performed& &30\%  & 24\%   &54\%& 7\% & 3\%  &  11\%\\
+		\hline
+		\multirow{6}{*}{SQ3: Introducing Intents}  & a. development & 78\%&61\%&61\%&67\%&60\%&72\%           \\
+		& b. new feature&27\%&41\%&31\%&22\%&18\%&25\%   \\
+		& c. enhancement &27\%&28\%&34\%&22\%&27\%&24\% \\
+		& d. refactoring &21\%&20\%&21\%&21\%&15\%&20\%	\\
+		& e. bug fixing &11\%&20\%&20\%&22\%&20\%&12\%	 \\
+		\hline
+		SQ4: Leading to Bugs&  & 67\% & 52\%   &65\%& 64\% &  65\% &55\% \\            
+		\hline	
+	\end{tabular}
+\end{table*}
+
+\subsection{Qualitative Research}
+We collected a list of Python developers actively contributing to popular systems from GitHub. Initially, we contacted some professional developers and inquired about their points of dynamic type-aware practices. Most developers pointed out that they were very interested in our study, and sent us their suggestions and experiences about dynamic type-aware practices. Generally, they believed that the studied practices are bad practices in complex scenarios.
+
+After summarizing the initial feedback from developers,  we designed a questionnaire to developers and asked the following questions about six types of dynamic type-aware practices:
+\begin{itemize}
+	\item 
+SQ1. How many years of experience do you have in programming with Python?
+	\item 
+SQ2. Which types of practices do you widely perform in Python code?
+	\item 
+SQ3. When do you often introduce them into Python code?
+	\item 
+SQ4. Which types of practices have ever led to bug issues in your experience?
+\end{itemize}
+
+The goal of this survey is getting individual answers to our research questions from developers (SQ2 for investigating RQ1, SQ3 for investigating RQ2, and SQ4 for investigating RQ3).
+We invited 367 developers to complete this questionnaire and 70 developers fully completed it in two weeks. 
+
+From the answers to SQ1, the Python programming experience of the survey participants is distributed over: less than 3 years (23\%), 4-6 years (27\%), 7-10 years (30\%), and more than 10 years (20\%). The answers to SQ2-SQ4 are summarized in TABLE \ref{tab:surveyresults}. This result will be explained and discussed in the following section.
+
+
+
+
+
+

@@ -1,0 +1,43 @@
+% !TeX root = ../main.tex
+
+\section{Related Work}
+
+\noindent{\bf Empirical Studies of Dynamic Features.}
+The study of dynamic feature usage has been addressed by researchers in many programming languages, including Smalltalk\cite{b6}, JavaScript\cite{b3}, AspectJ\cite{b7}, and Python\cite{b5,b8}. Holkner and Harland\cite{b5} carried out the first study on the usage of dynamic features in Python. They traced the occurrences of dynamic feature code and found the behaviors of dynamic features mainly occur during program startup. Later in 2014, {\AA}kerblom et al. \cite{b8} reported a similar study but demonstrated that dynamic activities neither prominently occur at startup phases nor are buried in the library. These studies suggest that dynamic features are an important part in programming tasks.
+
+Negative aspects of dynamic features were also found during maintenance phase, especially in JavaScript\cite{b9} and Python\cite{b4,b19}. 
+Park et al. \cite{b9} found that extremely dynamic features of JavaScript make it difficult to analyze Web applications statically, particularly resulting in too many false positives. 
+Wang et al. \cite{b4} pointed out that dynamic feature code is generally error-prone and unpleasant to maintain in Python systems, which makes dynamic feature code changeable during evolution. 
+Chen et al. \cite{b19} found that the misuse of dynamic features introduces bugs in Python systems and the bugs are often fixed by adding a check or adding an exception handling. 
+The above studies of dynamic features demonstrate that the misuse of dynamic features poses threats to software maintenance. In this paper, the study addresses the misuse of Python dynamic features on its dynamic type system, including dynamic typing and dynamic object changes.
+
+
+\noindent{\bf Evaluation of Dynamic Type Systems.}
+The question of whether or not a kind of type system has any benefit is not indisputable. Multiple studies have performed the comparison between dynamic and static type systems along different dimensions, including development productivity \cite{b21,b25} , code usability\cite{b26}, and code quality \cite{b10,b28}.
+Stuchlik and Hanenberg \cite{b21} compared statically and dynamically typed languages (i.e., Java and Groovy) in the relationship between type casts and development time. Their experiment was performed on 21 subjects who performed programming tasks using two programming languages, and discovered that the dynamically typed group solved the programming tasks significantly faster for most tasks.
+Kleinschmager et al. \cite{b25} reported a similar experiment and showed rigorous evidence that static type systems are indeed beneficial to maintenance activities, except for fixing semantic errors.		
+Mayer et al. \cite{b26} conducted a controlled experiment where 27 subjects performed programming tasks on an undocumented API with a static type system and a dynamic type system. Their results show that for three out of five tasks of using undocumented software, programmers had faster completion times using a static type system.
+Gao et al. \cite{b10} evaluated the code quality benefits that static type systems provide to JavaScript codebases. The central finding is that using static type systems (i.e., Flow and TypeScript) could have prevented 15\% of the public bugs.
+Ray et al. \cite{b28} gathered a very large dataset from GitHub to study the effects of language features on software quality. They reported that language design does have a significant, but modest effect on software quality. Especially, they concluded that static typing is somewhat better than dynamic typing.
+		
+Since researchers have valid arguments for a kind of type system, the conclusions about which kind of type system is better contradict each other. This study analyzes six types of dynamic type-aware practices in Python systems, which reveals the positive and negative roles of dynamic type system.
+		
+		
+\noindent{\bf Detection of Type-Aware Bugs and Bad Practices.}	
+Owing to the lack of type declarations in Python and other dynamically typed languages, it is common to appear type-aware issues (caused by bad practices or bugs) but is hard for developers to fix them. The key to detecting and fixing type-aware bad practices or bugs is type inference. Recent work on type inference to dynamically typed languages has adopted type hints to improve type inference. Xu et al. \cite{b14} extracted type hints from attribute accesses and variable names. They correlated these type hints through probabilistic inference, and eventually converged on probabilities of variable types in Python programs. Similarly, Milojkovi{\'c} et al. \cite{b20} exploited type hints in methods, including argument names and type annotations, to augment the performance of a static type inference algorithm.
+
+Due to the lack of compile-time type checking, type errors in dynamic languages may remain unnoticed. Xu et al. \cite{b15} developed a predictive analysis engine for Python programs. It supports adding assertions for type bug detection, including subtype assertion and attribute assertion. Chen et al.\cite{b17} presented a constraint framework based on Python's structural equivalence type system, where constraints are extracted from source code via static analysis and are used to check bugs. Currently, the techniques of detecting type bugs in dynamic languages are still restricted to the size of analyzed systems.
+
+Bad coding practices are widely analyzed to provide hints of refactoring tasks. Type-aware bad practices were also mentioned in other researches\cite{b11,b2,b1}. 
+Gong et al.\cite{b11} mined and checked three type-related rules for occurrences of multi-event runtime patterns in JavaScript, including  ``too many arguments'', ``accessing the undefined property'' and ``concatenate undefined and a string''. 
+Pradel et al. \cite{b2} classified all type coercions in JavaScript into likely harmless and potentially harmful coercions, and summarized the bad usage and the ugly usage of type coercions. 
+Similar to our work, Pradel et al. \cite{b1} also presented a mostly dynamic analysis that warns developers about variables, properties, and functions that have inconsistent types in JavaScript. In this paper, we extend their work on dynamic type-aware practices. First, their work only focused on inconsistent types, while our study covers six types of type-aware practices based on dynamic typing features. Second, their work aimed at detecting inconsistent types in JavaScript programs without analyzing detailed effects of inconsistent types. This paper provides empirical evidence about how dynamic type-aware practices are introduced by developers into systems and how they benefit or reduce software development and maintenance.
+
+
+
+
+
+
+
+	
+

@@ -1,0 +1,96 @@
+\section{Dynamic Type-aware Practices}\label{sec:def}
+
+Python is one of the most popular dynamic object-oriented languages in recent years. It makes the extensive use of dynamic features: one can effortlessly use the compiler to change the program behavior at runtime. The prominent dynamic features of Python, which highly affect the developers' usage of dynamic typing discipline, include:
+\begin{itemize}
+\item 
+\emph{First-Class Objects.} As opposed to many static languages, all objects in Python are first-class objects. A first-class object is an entity that can be dynamically created, destroyed, passed as arguments to functions, and returned as values, no matter what type it is. The type system of Python includes primitive types (e.g., \textit{int}, \textit{string}), container types (e.g., \textit{list}, \textit{tuple}), frame types (e.g., \textit{class}, \textit{function}, \textit{module}), and other user-defined types. The rights of first-class objects complicate matters for type analysis especially with respect to instance creation and variable assignment. 
+\item 
+\emph{Behavioral Reflection.} With the behavioral features of Python, programmers can access the value of an attribute in an object based on its dynamically determined name. These features include support for checking available fields/methods and modifying their values through dynamically determined names.
+\item 
+\emph{Structural Reflection.} Structural reflective features of Python allow programmers to delete a variable, regardless of which type it is (e.g., \textit{function} and \textit{class}), from the program at runtime. Furthermore, attributes can be appended or removed dynamically.
+\end{itemize}
+
+These features support rapid development in practice. However, developers should utilize dynamic features in a restricted way, as existing researches have discovered potential threats of some dynamic features, especially on developers' usage of the dynamic typing discipline\cite{b1,b2}. It is easy to see that the ability to change types of any first-class object at run-time can introduce misbehavior in a program, as types are no longer stable. No compile-time warnings are reported if a variable combines inconsistent types against the developer's will, but it leads to incorrect behavior due to a wrong type at runtime. Formally, two types are \textbf{consistent} if both types are the same, if both types are structurally equivalent, or if one type is a structural subtype of the other type; otherwise, two types are \textbf{inconsistent}\cite{b1}. Based on the above definition, three types of inconsistent typing practices are introduced as follows.
+
+\emph{1) Inconsistent Assignment Types:} One variable is redefined with an inconsistent type. In this situation, developers redefine a variable with an inconsistent type with the previous type it has. The code segment shown in Section \ref{sec:intro} is an example of such practice. It may cause confusion about the function and the usage of this variable.
+
+\emph{2) Inconsistent Argument Types:} Argument value has inconsistent types. Due to the lack of type declaration of function arguments, developers can use different types of arguments in function calls. Such practices occur when assigning inconsistent types to the same argument in different function calls. An example from {\tt tornado}\cite{b37} is presented as follows:
+\begin{lstlisting}[
+basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+columns=fullflexible,
+breaklines=true,                 % automatic line breaking only at whitespace
+captionpos=b,                    % sets the caption-position to bottom
+tabsize=4,
+escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+stringstyle=\ttfamily,     % string literal style
+frame=single]
+logging.warning((red.response.http_error.desc, vars(red.response.http_error), url))
+...
+logging.warning("Starting fetch with curl client")
+\end{lstlisting}
+\noindent In the above two statements, the first arguments to \textit{logging.warning} have incompatible types: \textit{tuple} and \textit{string}. The compiler would not report any errors or warnings even if one type of the argument is unacceptable in the function.
+
+\emph{3) Inconsistent Variable Types:} Variable reference has inconsistent types. In this case, a variable carries inconsistent types at a program point following different execution paths. Below is an example from {\tt tornado}\cite{b37}:
+\begin{lstlisting}[
+basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+columns=fullflexible,
+breaklines=true,                 % automatic line breaking only at whitespace
+captionpos=b,                    % sets the caption-position to bottom
+tabsize=4,
+escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+stringstyle=\ttfamily,     % string literal style
+frame=single]
+		return prefix+quote
+\end{lstlisting}
+\noindent The function returns the sum of \emph{prefix} and \emph{quote} where the type of \emph{prefix} is \textit{list} or \textit{string}, because \emph{prefix} is defined following different inputs or different paths. The inconsistent types lead to unstable behaviors of the program.
+
+Another high risk behavior of Python developers is to change an object structure dynamically, especially container objects and class/instance objects, as the structure of an object is no longer stable and all the variables referring to it are affected. It often happens when ``glueing'' different codebases in Python systems. To this end, another three types of dynamic type-aware practices of Python developers are listed as follows:
+
+\emph{4) Dynamic Element Deletion:} One element is deleted from a container. We show an example from {\tt scikit-learn}\cite{b38} in the following:
+
+ \begin{lstlisting}[
+ basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+ columns=fullflexible,
+ breaklines=true,                 % automatic line breaking only at whitespace
+ captionpos=b,                    % sets the caption-position to bottom
+ tabsize=4,
+ escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+ stringstyle=\ttfamily,     % string literal style
+ frame=single]
+for k, v in list(six.iteritems(namecount)):
+	if v == 1:
+		del namecount[k]
+ \end{lstlisting}
+\noindent The statements delete some elements from \textit{namecount} by \textit{del} feature of Python. However, it causes errors if developers still visit the elements after deletion. In addition, if deleting elements from \textit{list} objects, developers may feel confused about the new indexes when visiting the remaining elements. 
+
+\emph{5) Dynamic Attribute Deletion:} One attribute is deleted from an object. An example from {\tt django}\cite{b39} is presented as follows:
+ \begin{lstlisting}[
+basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+columns=fullflexible,
+breaklines=true,                 % automatic line breaking only at whitespace
+captionpos=b,                    % sets the caption-position to bottom
+tabsize=4,
+escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+stringstyle=\ttfamily,     % string literal style
+frame=single]
+   delattr(obj.__class__, self.name)
+\end{lstlisting}
+\noindent This code segment causes an \emph{AttributeError} bug as the attribute is still visited after dynamic deletion. Furthermore, deleting an attribute from a class object makes this attribute unavailable any more in all of its instances.
+
+\emph{6) Dynamic Attribute Access:} One attribute is visited based on a dynamically determined name. As the attribute list of a Python object is unstable at runtime, it is risky to visit an attribute in a undetermined behavior. Here is an example from {\tt ansible}\cite{b40} :
+
+ \begin{lstlisting}[
+basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+columns=fullflexible,
+breaklines=true,                 % automatic line breaking only at whitespace
+captionpos=b,                    % sets the caption-position to bottom
+tabsize=4,
+escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+stringstyle=\ttfamily,     % string literal style
+frame=single]
+   dep_value = getattr(dep, attr)
+\end{lstlisting}
+\noindent This statement gets an attribute value from \emph{dep} while the attribute name \emph{attr} is undetermined. A suggested solution is checking the existence of the attribute before getting its value.
+
+This study analyzes the above 6 types of dynamic type-aware practices which are common but potentially risky in Python systems. It does not mean that they are not allowed to appear in Python programs, but rather that they should be restricted to avoid type errors. Noting that these type-aware practices also exist in many other dynamic languages including JavaScript. Therefore, this study benefits a wide range of developers and researchers. 
+
